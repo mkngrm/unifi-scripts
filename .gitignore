@@ -1,0 +1,13 @@
+# Configuration with sensitive data
+config.js
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
