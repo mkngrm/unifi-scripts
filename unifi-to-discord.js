@@ -5,6 +5,7 @@
 // 2. Update DEVICE_MAPPING with your camera MAC addresses and names
 //    - Find MAC addresses in UniFi Protect under each device's settings
 // 3. Update TIMEZONE if needed (default: America/New_York)
+// 4. Customize ALERT_CONFIGS to add/modify alert levels, emojis, and colors
 
 // ============================================================================
 // CONFIGURATION - UPDATE THESE VALUES
@@ -25,21 +26,27 @@ const DEVICE_MAPPING = {
 // Timezone for timestamp display (IANA timezone format)
 const TIMEZONE = 'America/New_York';
 
+// Alert level emoji and color mapping
+// Prefix your UniFi alarm names with these levels (e.g., "SECURITY: Motion Detected")
+// Colors are Discord embed colors in decimal format (use https://www.spycolor.com to convert hex)
+// Add custom levels as needed - they will be matched case-insensitively
+const ALERT_CONFIGS = {
+  'SECURITY': { emoji: '🚨', color: 16711680 },  // Red
+  'WARNING': { emoji: '⚠️', color: 16753920 },   // Orange
+  'ALERT': { emoji: '🔔', color: 16776960 },     // Yellow
+  'INFO': { emoji: 'ℹ️', color: 3447003 },        // Blue
+  'DEFAULT': { emoji: '📹', color: 9936031 }     // Gray (used when no level prefix matches)
+};
+
 // ============================================================================
 // DO NOT MODIFY BELOW THIS LINE (unless you know what you're doing)
 // ============================================================================
 
-// Alert level emoji and color mapping for video monitoring
-const ALERT_CONFIGS = {
-  'SECURITY': { emoji: '🚨', color: 16711680 },
-  'WARNING': { emoji: '⚠️', color: 16753920 },
-  'ALERT': { emoji: '🔔', color: 16776960 },
-  'INFO': { emoji: 'ℹ️', color: 3447003 },
-  'DEFAULT': { emoji: '📹', color: 9936031 }
-};
-
 function parseAlertName(alarmName) {
-  const match = alarmName.match(/^(SECURITY|WARNING|ALERT|INFO):\s*(.+)$/i);
+  // Dynamically build regex from ALERT_CONFIGS keys (excluding DEFAULT)
+  const levels = Object.keys(ALERT_CONFIGS).filter(k => k !== 'DEFAULT').join('|');
+  const regex = new RegExp(`^(${levels}):\\s*(.+)$`, 'i');
+  const match = alarmName.match(regex);
 
   if (match) {
     const level = match[1].toUpperCase();
@@ -47,7 +54,7 @@ function parseAlertName(alarmName) {
     return { level, fullName: `${level}: ${restOfName}` };
   }
 
-  return { level: 'INFO', fullName: alarmName };
+  return { level: 'DEFAULT', fullName: alarmName };
 }
 
 function convertTimestamp(timestamp) {
