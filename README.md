@@ -57,3 +57,46 @@ The script outputs `hasThumbnail` and `thumbnailData` fields. To send images to 
    - URL: `{{ $json.webhookUrl }}`
    - Body Content Type: JSON
    - Body: `{{ $json.discordEmbed }}`
+
+---
+
+## unifi-network-to-discord.js
+
+An n8n Code node script that processes UniFi Network alerts (VPN, Firewall, WiFi, System events, etc.) and sends formatted notifications to Discord.
+
+### Setup
+
+1. Copy the contents of `unifi-network-to-discord.js` into an n8n Code node
+2. Update the configuration section at the top of the script:
+   - `DISCORD_WEBHOOK_URL`: Your Discord webhook URL
+   - `TIMEZONE`: Your timezone in IANA format (default: America/New_York)
+   - `CATEGORY_CONFIGS`: Customize category emojis and colors
+   - `SEVERITY_CONFIGS`: Customize severity level labels and colors
+
+### Categories
+
+The script automatically detects and styles alerts based on their category/subcategory:
+- `VPN` - Green with lock emoji (includes client name, VPN name, IPs)
+- `Firewall` - Red with shield emoji
+- `WiFi` - Blue with signal emoji
+- `System` - Gray with gear emoji
+- `Switching` - Orange with plug emoji
+- `Routing` - Purple with globe emoji
+- `Threat` - Red with warning emoji
+
+### Severity Levels
+
+UniFi Network uses severity levels 1-5:
+- `1` - Info (blue)
+- `2` - Notice (teal)
+- `3` - Warning (yellow)
+- `4` - Error (orange)
+- `5` - Critical (red)
+
+### n8n Workflow
+
+After the Code node, add an HTTP Request node:
+- Method: POST
+- URL: `{{ $json.webhookUrl }}`
+- Body Content Type: JSON
+- Body: `{{ $json.discordEmbed }}`
