@@ -1,8 +1,8 @@
 # UniFi Scripts
 
-Scripts for integrating UniFi Protect with external services.
+Scripts for integrating UniFi products with external services.
 
-## unifi-to-discord.js
+## unifi-protect-to-discord.js
 
 An n8n Code node script that processes UniFi Protect alarm events and sends formatted notifications to Discord.
 
@@ -10,7 +10,7 @@ Based on the [Python script by EnderDragonEP](https://hackmd.io/@EnderDragonEP/u
 
 ### Setup
 
-1. Copy the contents of `unifi-to-discord.js` into an n8n Code node
+1. Copy the contents of `unifi-protect-to-discord.js` into an n8n Code node
 2. Update the configuration section at the top of the script:
    - `DISCORD_WEBHOOK_URL`: Your Discord webhook URL (create one in Discord: Server Settings > Integrations > Webhooks)
    - `DEVICE_MAPPING`: Your camera MAC addresses mapped to friendly names
