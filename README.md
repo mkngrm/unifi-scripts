@@ -4,16 +4,26 @@ Scripts for integrating UniFi Protect with external services.
 
 ## unifi-to-discord.js
 
-Processes UniFi Protect alarm events and formats them as Discord webhook embeds.
+An n8n Code node script that processes UniFi Protect alarm events and sends formatted notifications to Discord.
 
 ### Setup
 
-1. Copy `config.example.js` to `config.js`
-2. Edit `config.js` with your settings:
-   - `discordWebhookUrl`: Your Discord webhook URL
-   - `deviceMapping`: MAC address to camera name mapping
-   - `timezone`: Your timezone (default: America/New_York)
+1. Copy the contents of `unifi-to-discord.js` into an n8n Code node
+2. Update the configuration section at the top of the script:
+   - `DISCORD_WEBHOOK_URL`: Your Discord webhook URL (create one in Discord: Server Settings > Integrations > Webhooks)
+   - `DEVICE_MAPPING`: Your camera MAC addresses mapped to friendly names
+   - `TIMEZONE`: Your timezone in IANA format (default: America/New_York)
 
-### Configuration
+### Finding Camera MAC Addresses
 
-The `config.js` file is gitignored to keep your sensitive data private. See `config.example.js` for the expected format.
+MAC addresses can be found in UniFi Protect under each device's settings. The format should be uppercase with no colons (e.g., `F4E2C679B337`).
+
+### Alert Levels
+
+The script supports different alert levels that change the Discord embed appearance:
+- `SECURITY:` - Red embed with alert emoji
+- `WARNING:` - Orange embed with warning emoji
+- `ALERT:` - Yellow embed with bell emoji
+- `INFO:` - Blue embed with info emoji
+
+Prefix your alarm names in UniFi Protect with these levels (e.g., "SECURITY: Motion Detected").

@@ -1,16 +1,33 @@
-// UniFi Protect to Discord Alert Processor
-// Configuration is loaded from config.js (copy config.example.js to get started)
+// UniFi Protect to Discord Alert Processor for n8n
+//
+// SETUP INSTRUCTIONS:
+// 1. Update DISCORD_WEBHOOK_URL with your Discord webhook URL
+// 2. Update DEVICE_MAPPING with your camera MAC addresses and names
+//    - Find MAC addresses in UniFi Protect under each device's settings
+// 3. Update TIMEZONE if needed (default: America/New_York)
 
-const config = require('./config');
+// ============================================================================
+// CONFIGURATION - UPDATE THESE VALUES
+// ============================================================================
 
-// Device ID to device name mapping (loaded from config)
-const DEVICE_MAPPING = config.deviceMapping;
+// Discord webhook URL - Create one in Discord: Server Settings > Integrations > Webhooks
+const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN';
 
-// Discord webhook URL (loaded from config)
-const DISCORD_WEBHOOK_URL = config.discordWebhookUrl;
+// Device MAC address to camera name mapping
+// Format: 'MAC_ADDRESS': { name: 'Display Name', zone: 'zone_name' }
+// The MAC address should match what UniFi Protect sends (uppercase, no colons)
+const DEVICE_MAPPING = {
+  'XXXXXXXXXXXX': { name: 'Front Door Camera', zone: 'front' },
+  'XXXXXXXXXXXX': { name: 'Backyard Camera', zone: 'backyard' },
+  // Add more cameras as needed...
+};
 
-// Timezone for timestamps (loaded from config)
-const TIMEZONE = config.timezone || 'America/New_York';
+// Timezone for timestamp display (IANA timezone format)
+const TIMEZONE = 'America/New_York';
+
+// ============================================================================
+// DO NOT MODIFY BELOW THIS LINE (unless you know what you're doing)
+// ============================================================================
 
 // Alert level emoji and color mapping for video monitoring
 const ALERT_CONFIGS = {
