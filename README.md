@@ -13,6 +13,7 @@ An n8n Code node script that processes UniFi Protect alarm events and sends form
    - `DISCORD_WEBHOOK_URL`: Your Discord webhook URL (create one in Discord: Server Settings > Integrations > Webhooks)
    - `DEVICE_MAPPING`: Your camera MAC addresses mapped to friendly names
    - `TIMEZONE`: Your timezone in IANA format (default: America/New_York)
+   - `ALERT_CONFIGS`: Customize alert levels, emojis, and colors
 
 ### Finding Camera MAC Addresses
 
@@ -26,4 +27,31 @@ The script supports different alert levels that change the Discord embed appeara
 - `ALERT:` - Yellow embed with bell emoji
 - `INFO:` - Blue embed with info emoji
 
-Prefix your alarm names in UniFi Protect with these levels (e.g., "SECURITY: Motion Detected").
+Prefix your alarm names in UniFi Protect with these levels (e.g., "SECURITY: Motion Detected"). You can add custom levels by editing `ALERT_CONFIGS`.
+
+### Thumbnail Support
+
+The script supports displaying camera thumbnails in Discord notifications.
+
+**To enable thumbnails in UniFi Protect:**
+1. Go to your webhook settings in UniFi Protect
+2. Check the "Use Thumbnails" option
+3. Make sure the webhook method is set to POST
+
+**n8n workflow setup for thumbnails:**
+
+The script outputs `hasThumbnail` and `thumbnailData` fields. To send images to Discord, you'll need to use an HTTP Request node with multipart form data:
+
+1. After the Code node, add an **IF** node to check `{{ $json.hasThumbnail }}`
+2. For the **true** branch (with thumbnail), use an HTTP Request node:
+   - Method: POST
+   - URL: `{{ $json.webhookUrl }}`
+   - Body Content Type: Multipart Form Data
+   - Body Parameters:
+     - `payload_json` (string): `{{ JSON.stringify($json.discordEmbed) }}`
+     - `files[0]` (file): Set filename to `thumbnail.jpg` and use expression `{{ Buffer.from($json.thumbnailData, 'base64') }}`
+3. For the **false** branch (no thumbnail), use a simple HTTP Request node:
+   - Method: POST
+   - URL: `{{ $json.webhookUrl }}`
+   - Body Content Type: JSON
+   - Body: `{{ $json.discordEmbed }}`

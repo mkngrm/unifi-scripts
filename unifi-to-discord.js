@@ -141,26 +141,47 @@ if (data.alarm) {
       });
     }
 
-    const discordEmbed = {
-      embeds: [
-        {
-          title: title,
-          description: `Detected: ${triggerKey} at ${deviceInfo.name}`,
-          color: alertConfig.color,
-          fields: fields,
-          footer: {
-            text: "UniFi Protect",
-            icon_url: "https://pbs.twimg.com/profile_images/1610157462321254402/tMCv8T-y_400x400.png"
-          },
-          timestamp: new Date(timestamp).toISOString()
-        }
-      ]
+    const embed = {
+      title: title,
+      description: `Detected: ${triggerKey} at ${deviceInfo.name}`,
+      color: alertConfig.color,
+      fields: fields,
+      footer: {
+        text: "UniFi Protect",
+        icon_url: "https://pbs.twimg.com/profile_images/1610157462321254402/tMCv8T-y_400x400.png"
+      },
+      timestamp: new Date(timestamp).toISOString()
     };
+
+    const discordEmbed = {
+      embeds: [embed]
+    };
+
+    // Handle thumbnail from UniFi Protect (enable "Use Thumbnails" in webhook settings)
+    let thumbnailData = null;
+    if (alarm.thumbnail) {
+      let imageData = alarm.thumbnail;
+
+      // Handle data URI format (data:image/jpeg;base64,...)
+      if (imageData.startsWith('data:image')) {
+        imageData = imageData.split(',')[1];
+      }
+
+      // Add image reference to embed
+      embed.image = {
+        url: "attachment://thumbnail.jpg"
+      };
+
+      // Store base64 data for the HTTP Request node to send as multipart
+      thumbnailData = imageData;
+    }
 
     results.push({
       json: {
         webhookUrl: DISCORD_WEBHOOK_URL,
         discordEmbed: discordEmbed,
+        thumbnailData: thumbnailData,
+        hasThumbnail: !!thumbnailData,
         alertType: level,
         alarmName: fullName,
         trigger: triggerKey,
