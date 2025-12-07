@@ -1,5 +1,8 @@
 // UniFi Protect to Discord Alert Processor for n8n
 //
+// Based on the Python script by EnderDragonEP:
+// https://hackmd.io/@EnderDragonEP/unifi_to_discord_webhook
+//
 // SETUP INSTRUCTIONS:
 // 1. Update DISCORD_WEBHOOK_URL with your Discord webhook URL
 // 2. Update DEVICE_MAPPING with your camera MAC addresses and names

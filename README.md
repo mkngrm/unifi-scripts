@@ -6,6 +6,8 @@ Scripts for integrating UniFi Protect with external services.
 
 An n8n Code node script that processes UniFi Protect alarm events and sends formatted notifications to Discord.
 
+Based on the [Python script by EnderDragonEP](https://hackmd.io/@EnderDragonEP/unifi_to_discord_webhook).
+
 ### Setup
 
 1. Copy the contents of `unifi-to-discord.js` into an n8n Code node
